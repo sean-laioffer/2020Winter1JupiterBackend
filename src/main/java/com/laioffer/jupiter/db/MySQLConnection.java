@@ -85,28 +85,27 @@ public class MySQLConnection {
             throw new MySQLException("Failed to add item to Database");
         }
     }
+
     public Set<String> getFavoriteItemIds(String userId) throws MySQLException {
         if (conn == null) {
             System.err.println("DB connection failed");
             throw new MySQLException("Failed to connect to Database");
         }
-
-        Set<String> favoriteItems = new HashSet<>();
         String sql = "SELECT item_id FROM favorite_records WHERE user_id = ?";
+        Set<String> favoriteItemIds = new HashSet<>();
         try {
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, userId);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 String itemId = rs.getString("item_id");
-                favoriteItems.add(itemId);
+                favoriteItemIds.add(itemId);
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new MySQLException("Failed to get favorite item ids from Database");
+            throw new MySQLException("Failed to delete favorite item to Database");
         }
-
-        return favoriteItems;
+        return favoriteItemIds;
     }
 
     public Map<String, List<Item>> getFavoriteItems(String userId) throws MySQLException {
@@ -164,48 +163,5 @@ public class MySQLConnection {
             throw new MySQLException("Failed to get favorite game ids from Database");
         }
         return itemMap;
-    }
-
-    public String verifyLogin(String userId, String password) throws MySQLException {
-        if (conn == null) {
-            System.err.println("DB connection failed");
-            throw new MySQLException("Failed to connect to Database");
-        }
-        String name = "";
-        String sql = "SELECT first_name, last_name FROM users WHERE id = ? AND password = ?";
-        try {
-            PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setString(1, userId);
-            statement.setString(2, password);
-            ResultSet rs = statement.executeQuery();
-            if (rs.next()) {
-                name = rs.getString("first_name") + " " + rs.getString("last_name");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new MySQLException("Failed to verify user id and password from Database");
-        }
-        return name;
-    }
-
-    public boolean addUser(String userId, String password, String firstname, String lastname) throws MySQLException {
-        if (conn == null) {
-            System.err.println("DB connection failed");
-            throw new MySQLException("Failed to connect to Database");
-        }
-
-        String sql = "INSERT IGNORE INTO users VALUES (?, ?, ?, ?)";
-        try {
-            PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setString(1, userId);
-            statement.setString(2, password);
-            statement.setString(3, firstname);
-            statement.setString(4, lastname);
-
-            return statement.executeUpdate() == 1;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new MySQLException("Failed to get user information from Database");
-        }
     }
 }

@@ -8,7 +8,6 @@ public class MySQLTableCreator {
     // Run this as a Java application to reset the database.
     public static void main(String[] args) {
         try {
-
             // Step 1 Connect to MySQL.
             System.out.println("Connecting to " + MySQLDBUtil.getMySQLAddress());
             Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
