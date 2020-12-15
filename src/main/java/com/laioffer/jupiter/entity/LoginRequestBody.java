@@ -1,3 +1,4 @@
+
 package com.laioffer.jupiter.entity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
